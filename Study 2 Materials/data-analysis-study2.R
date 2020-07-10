@@ -37,10 +37,6 @@ ci.reliability(data=vh, type="omega", interval.type = "bca", B=1000)
 omega(vh, nfactors = 1, fm="ml")
 omega(vh_r, fm="minres")
 
-## Mean-centering all predictors
-
-
-
 
 ## Demographics
 
