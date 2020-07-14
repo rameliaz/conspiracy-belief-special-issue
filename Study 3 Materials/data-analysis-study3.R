@@ -147,7 +147,6 @@ describeBy(data3$MNC_01, group=data3$religious_endorse)
 
 
 
-
 ## Model
 
 model_1 <- lm(vcb ~ bjc.mc + identity_threat + religious_endorse + bjc.mc*identity_threat + bjc.mc*religious_endorse +
