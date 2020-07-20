@@ -9,32 +9,35 @@ library(tidyverse)
 library(ggplot2)
 library(semTools)
 
+## Transform VBE_03 score
+
+data2$VBE_03R <- car::recode(data2$VBE_03, '0:5=2; 6:7=1; 8:10=0') ## aligning VBE_03 scoring with the scoring guide provided by the scale author. 0-5=2, 6-7=1, and 8-10=0
+
 
 ## Testing reliability
 
 str(data2)
 
-bjc <- data2[, c("BJC_01", "BJC_02", "BJC_03", "BJC_04", "BJC_05",
+bjc_2 <- data2[, c("BJC_01", "BJC_02", "BJC_03", "BJC_04", "BJC_05",
                  "BJC_06", "BJC_07", "BJC_08", "BJC_09", "BJC_10",
                  "BJC_11", "BJC_12")]
 
-bjc_reliability_2 <- ci.reliability(data=bjc, type="omega", interval.type = "bca", B=1000)
+bjc_reliability_2 <- ci.reliability(data=bjc_2, type="omega", interval.type = "bca", B=1000) ## testing bjc reliability
 
-cor <- data2[, c("COR_1", "COR_2", "COR_3", "COR_4", "COR_5")]
+cor_2 <- data2[, c("COR_1", "COR_2", "COR_3", "COR_4", "COR_5")]
 
-cor_reliability_2 <- ci.reliability(data=cor, type="omega", interval.type = "bca", B=1000)
+cor_reliability_2 <- ci.reliability(data=cor_2, type="omega", interval.type = "bca", B=1000) ## testing cor reliability
 
-vcb <- data2[, c("VBC_01", "VBC_02", "VBC_03", "VBC_04", "VBC_05",
+vcb_2 <- data2[, c("VBC_01", "VBC_02", "VBC_03", "VBC_04", "VBC_05",
                 "VBC_06", "VBC_07", "VBC_08")]
 
-vcb_reliability_2 <- ci.reliability(data=vcb, type="omega", interval.type = "bca", B=1000)
+vcb_reliability_2 <- ci.reliability(data=vcb_2, type="omega", interval.type = "bca", B=1000) ## testing vcb reliability
 
-vh <- data2[, c("VBE_01", "VBE_02", "VBE_03R", "VBE_04", "VBE_05", "VBE_06")]
-vh_r <- data2[, c("VBE_01", "VBE_02", "VBE_03R", "VBE_05", "VBE_06")]
+vh_2 <- data2[, c("VBE_01", "VBE_02", "VBE_03R", "VBE_04", "VBE_05", "VBE_06")]
+vh_r_2 <- data2[, c("VBE_01", "VBE_02", "VBE_03R", "VBE_05", "VBE_06")]
 
-vh_reliability_2 <- ci.reliability(data=vh_r, type="omega", interval.type = "bca", B=1000)
-omega(vh, nfactors = 1, fm="ml")
-omega(vh_r, fm="minres")
+vh_reliability_2 <- ci.reliability(data=vh_2, type="omega", interval.type = "bca", B=1000) ## testing vaccination refusal & delay reliability **before** dropping VBE_04
+vh_reliability_2 <- ci.reliability(data=vh_r_2, type="omega", interval.type = "bca", B=1000) ## testing vaccination refusal & delay reliability **after** dropping VBE_04
 
 
 ## Demographics and zero-order correlations
@@ -50,25 +53,25 @@ describe(data2$DEMO_3) ## Participants mean/SD age
 describe(data2$DEMO_7) ## Participants' children mean/SD age
 table(data2$DEMO_4) ## Participants' gender
 
-cor <- cor%>%mutate(cor_mean=rowMeans(cor)) ## calculating row mean of centrality of religiosity
-describe(cor)
+cor_2 <- cor_2%>%mutate(cor_mean=rowMeans(cor_2)) ## calculating row mean of centrality of religiosity
+describe(cor_2)
 
-vcb <- vcb%>%mutate(vcb_mean=rowMeans(vcb)) ## calculating row mean of vaccine conspiracy belief
-describe(vcb)
+vcb_2 <- vcb_2%>%mutate(vcb_mean=rowMeans(vcb_2)) ## calculating row mean of vaccine conspiracy belief
+describe(vcb_2)
 
-bjc <- bjc%>%mutate(bjc_mean=rowMeans(bjc)) ## calculating row mean of belief in Jewish conspiracy
-describe(bjc)
+bjc_2 <- bjc_2%>%mutate(bjc_mean=rowMeans(bjc_2)) ## calculating row mean of belief in Jewish conspiracy
+describe(bjc_2)
 
-vh_r <- vh_r%>%mutate(vh_mean=rowMeans(vh_r)) ## calculating row mean of vaccine delay and refusal
-describe(vh)
+vh_r_2 <- vh_r_2%>%mutate(vh_mean=rowMeans(vh_r_2)) ## calculating row mean of vaccine delay and refusal
+describe(vh_2)
 
-corplot_2 = bind_cols(vh_r$vh_mean,bjc$bjc_mean,vcb$vcb_mean,cor$cor_mean) # Binding mean score to calculate zero-order correlations
+corplot_2 = bind_cols(vh_r_2$vh_mean,bjc_2$bjc_mean,vcb_2$vcb_mean,cor_2$cor_mean) # Binding mean score to calculate zero-order correlations
 
-PerformanceAnalytics::chart.Correlation(corplot_2, histogram=T,pch=19) ## zero order correlation
+correlation::correlation(corplot_2) ## zero order correlation
 
 
 
-## Creating total scores and interaction terms
+## Creating total scores, centering bjc and cor, and creating interaction terms
 
 data2 <- data2 %>% as_tibble() %>% mutate(
   bjc=BJC_01 + BJC_02 + BJC_03 + BJC_04 + BJC_05 + BJC_06 + BJC_07 + BJC_08 + BJC_09 + BJC_10 + BJC_11 + BJC_12,
@@ -105,9 +108,9 @@ lessrel := a * ab * imm * -0.5
 '
 
 fit2 <- sem(model2, data = data2)
-summary(fit2)
-fitMeasures(fit2)
-lavInspect(fit2, "rsquare")
+summary(fit2) ## model parameters
+fitMeasures(fit2) ## fit indices
+lavInspect(fit2, "rsquare") ## extracting rsquare
 
 corr.test(data2$bjc, data2$vh, alpha=0.05, ci=T)
 corr.test(data2$vcb, data2$vh, alpha=0.05, ci=T)
@@ -134,3 +137,7 @@ ggstatsplot::ggbetweenstats(
   xlab="Tingkat Pendidikan",
   ylab="Kepercayaan Konspiratif Yahudi"
 )
+
+## Session info
+
+sessionInfo()
