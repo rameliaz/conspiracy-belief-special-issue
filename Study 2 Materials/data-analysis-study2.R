@@ -107,15 +107,16 @@ lessrel := a * ab * imm * -0.5
 
 '
 
-fit2 <- sem(model2, data = data2)
+fit2 <- sem(model2, data = data2, se="bootstrap", bootstrap=1000)
 summary(fit2) ## model parameters
 fitMeasures(fit2) ## fit indices
 lavInspect(fit2, "rsquare") ## extracting rsquare
 
-corr.test(data2$bjc, data2$vh, alpha=0.05, ci=T)
-corr.test(data2$vcb, data2$vh, alpha=0.05, ci=T)
-
 parameters::model_parameters(fit2, standardize=T) ## obtaining standardised loadings with 95% CI
+
+parameterEstimates(fit2,
+                   se=T, zstat=T, pvalue=T, ci=T, 
+                   standardized=T) ## extracting unstandardised loadings with 95% CI
 
 
 ## Plots

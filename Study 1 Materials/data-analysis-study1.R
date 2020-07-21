@@ -103,14 +103,23 @@ fit <- sem(model, data=data,
                        "BJC_02", "BJC_03", "BJC_04", "BJC_05", "BJC_06", 
                        "BJC_07", "BJC_08", "BJC_09", "BJC_10", "BJC_11", 
                        "BJC_12","CN_01", "CN_02", "CN_03", "CN_04", 
-                       "CN_05", "CN_06", "CN_07R", "CN_08", "CN_09"))
+                       "CN_05", "CN_06", "CN_07R", "CN_08", "CN_09"), 
+           se="bootstrap", estimator="DWLS", bootstrap=1000)
 
-parameters::model_parameters(fit, standardize=T) ## obtaining standardised loadings with 95% CI
+standardizedSolution(fit, type="std.all", se=T, 
+                     pvalue=T, ci=T, level=0.95) ## obtaining standardised loadings with 95% CI
 
 summary(fit) ## extracting model parameters
 fitMeasures(fit) ## extracting fit indices
 lavInspect(fit, "rsquare") ## extracting rsquare 
 lavInspect(fit, "cor.lv") ## extracting correlations between latent variables
+
+
+
+parameterEstimates(fit,
+                   se=T, zstat=T, pvalue=T, ci=T, 
+                   standardized=T) ## extracting unstandardised loadings with 95% CI
+
 
 ## Session info
 

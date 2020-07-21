@@ -7,6 +7,7 @@ library(MBESS)
 library(tidyverse)
 library(ggplot2)
 library(forestmodel)
+library(simpleboot)
 
 
 ## Define factor levels for demographic variables
@@ -98,6 +99,7 @@ data3 <- data3 %>% as_tibble() %>% mutate(
 
 bjc_3 <- bjc_3%>%mutate(bjc_mean=rowMeans(bjc_3)) ## calculating row mean of belief in Jewish conspiracy
 describe(bjc_3)
+data3 <- cbind(data3, bjc_mean=bjc_3$bjc_mean)
 
 vcb_3 <- vcb_3%>%mutate(vcb_mean=rowMeans(vcb_3)) ## calculating row mean of belief in vaccine conspiracy
 describe(vcb_3)
@@ -149,6 +151,15 @@ ggstatsplot::ggbetweenstats(
 )
 
 
+## Randomisation check
+
+random <-  aov(bjc~identity_threat+religious_endorse+identity_threat*religious_endorse, data=data3) ## performing 2x2 ANOVA with bjc as a dependent variable
+summary(random) ## print summary
+effectsize::eta_squared(random, partial=F, ci=0.95) ## extracting 95% ci of eta squared
+
+describeBy(data3$bjc_mean, group=data3$identity_threat)
+describeBy(data3$bjc_mean, group=data3$religious_endorse)
+
 
 ## Model
 
@@ -160,15 +171,6 @@ plot(model_1) # model diagnostics
 report::report(model_1)
 
 print(forest_model(model_1)) ## Printing forest plot for the model
-
-### Bootstrapping model
-
-model.boot <- car::Boot(model_1, R=10000) ## bootstrapping regression model by 1000 iterations
-summary(model.boot) ## Boostrapped model parameter
-confint(model.boot) ## 95% CI of boostrapped model parameter
-plot(model.boot) ## model diagnostics
-
-print(forest_model(model.boot)) ## Printing forest plot for the model
 
 
 ggstatsplot::ggscatterstats(
@@ -202,17 +204,6 @@ report::report(model_2)
 
 print(forest_model(model_2)) ## Printing forest plot for the model
 
-## Randomisation check
-
-ggstatsplot::ggbetweenstats(
-  data = data3,
-  x = group,
-  y = bjc,
-  title = "Kepercayaan Konspiratif Yahudi Ditinjau dari Kelompok",
-  xlab="Kelompok",
-  ylab="Kepercayaan Konspiratif Yahudi"
-)
-
 
 ## Plots (Exploratory)
 
@@ -235,8 +226,7 @@ ggstatsplot::ggbetweenstats(
 )
 
 
-
-
 ## Session info
 
 sessionInfo()
+
