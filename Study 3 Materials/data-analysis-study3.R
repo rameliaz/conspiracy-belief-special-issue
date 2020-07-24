@@ -168,6 +168,7 @@ model_1 <- lm(vcb ~ bjc.mc + identity_threat + religious_endorse + bjc.mc*identi
 model.summary <- summary(model_1) # model parameter
 confint(model_1) # 95% confidence interval of model parameter
 plot(model_1) # model diagnostics
+car::vif(model_1) ## multicollinearity
 report::report(model_1)
 
 print(forest_model(model_1)) ## Printing forest plot for the model
@@ -201,6 +202,7 @@ model_2 <- lm(vc ~ BL_01+BL_02+BL_03+BL_04+BL_05, data=data3)
 summary(model_2) # model parameter
 confint(model_2) # 95% confidence interval of model parameter
 report::report(model_2)
+car::vif(model_2) ## multicollinearity
 
 print(forest_model(model_2)) ## Printing forest plot for the model
 

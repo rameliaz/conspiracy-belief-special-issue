@@ -109,18 +109,22 @@ fit <- sem(model, data=data,
 standardizedSolution(fit, type="std.all", se=T, 
                      pvalue=T, ci=T, level=0.95) ## obtaining standardised loadings with 95% CI
 
-summary(fit) ## extracting model parameters
+summary(fit, standardized=T) ## extracting model parameters
 fitMeasures(fit) ## extracting fit indices
 lavInspect(fit, "rsquare") ## extracting rsquare 
 lavInspect(fit, "cor.lv") ## extracting correlations between latent variables
 
-
+options(max.print = 10000)
 
 parameterEstimates(fit,
                    se=T, zstat=T, pvalue=T, ci=T, 
                    standardized=T) ## extracting unstandardised loadings with 95% CI
 
 
+
 ## Session info
 
 sessionInfo()
+
+set.seed(1989)
+sample(2:368, 10)

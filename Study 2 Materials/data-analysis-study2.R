@@ -108,7 +108,7 @@ lessrel := a * ab * imm * -0.5
 '
 
 fit2 <- sem(model2, data = data2, se="bootstrap", bootstrap=1000)
-summary(fit2) ## model parameters
+summary(fit2, standardized=T) ## model parameters
 fitMeasures(fit2) ## fit indices
 lavInspect(fit2, "rsquare") ## extracting rsquare
 
