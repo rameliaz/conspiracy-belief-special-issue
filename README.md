@@ -1,4 +1,4 @@
-# The Enemy of the 'Ummah: Belief in Jewish conspiracy theories indirectly affecting vaccination decision
+# The Enemy of the 'Ummah: Belief in Jewish conspiracy theories indirectly affected vaccination decision
 
 In this research, we aim to investigate the root of Jewish conspiracy belief and the impact of such conspiratorial thinking to vaccination decision, especially in Indonesian Muslims. To do so, we conducted two cross-sectional survey and one between-subject experimental study to test several hypotheses:
 1. We suspect that individuals who perceive Jews as a symbolic threat would find Jewish conspiracy theories more convincing and such relationship would be partly explained (mediated) with religious zeal and collective narcissism.
